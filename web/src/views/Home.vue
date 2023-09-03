@@ -46,35 +46,24 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="listData">
-        <template #footer>
-          <div>
-            <b>ant design vue</b>
-            footer part
-          </div>
-        </template>
+      <a-list item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }" :data-source="ebooks">
+
         <template #renderItem="{ item }">
-          <a-list-item key="item.title">
+          <a-list-item key="item.name">
             <template #actions>
           <span v-for="{ icon, text } in actions" :key="icon">
-            <component :is="icon" style="margin-right: 8px" />
+            <component :is="icon" style="margin-right: 8px"/>
             {{ text }}
           </span>
             </template>
-            <template #extra>
-              <img
-                  width="272"
-                  alt="logo"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-              />
-            </template>
             <a-list-item-meta :description="item.description">
               <template #title>
-                <a :href="item.href">{{ item.title }}</a>
+                <a :href="item.href">{{ item.name }}</a>
               </template>
-              <template #avatar><a-avatar :src="item.avatar" /></template>
+              <template #avatar>
+                <a-avatar :src="item.cover"/>
+              </template>
             </a-list-item-meta>
-            {{ item.content }}
           </a-list-item>
         </template>
       </a-list>
@@ -83,8 +72,8 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted,ref,reactive,toRef} from 'vue';
-import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
+import {defineComponent, onMounted, ref, reactive, toRef} from 'vue';
+import {StarOutlined, LikeOutlined, MessageOutlined} from '@ant-design/icons-vue';
 import axios from 'axios';
 // @ is an alias to /src
 const listData: Record<string, string>[] = [];
@@ -99,16 +88,11 @@ for (let i = 0; i < 23; i++) {
         'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
   });
 }
-const pagination = {
-  onChange: (page: number) => {
-    console.log(page);
-  },
-  pageSize: 3,
-};
+
 const actions: Record<string, any>[] = [
-  { icon: StarOutlined, text: '156' },
-  { icon: LikeOutlined, text: '156' },
-  { icon: MessageOutlined, text: '2' },
+  {icon: StarOutlined, text: '156'},
+  {icon: LikeOutlined, text: '156'},
+  {icon: MessageOutlined, text: '2'},
 ];
 
 export default defineComponent({
@@ -116,7 +100,7 @@ export default defineComponent({
   setup() {
     console.log("setup");
     const ebooks = ref();
-    const ebooks1 = reactive({books:[]});
+    const ebooks1 = reactive({books: []});
     onMounted(() => {
       axios.get("http://localhost:8880/ebook/list?name=Vue").then((response) => {
         const data = response.data;
@@ -125,11 +109,10 @@ export default defineComponent({
         console.log(response);
       });
     });
-    return{
+    return {
       ebooks,
-      ebooks2: toRef(ebooks1,"books"),
+      ebooks2: toRef(ebooks1, "books"),
       listData,
-      pagination,
       actions,
 
     }
