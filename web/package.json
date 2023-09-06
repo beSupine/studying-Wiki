@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service serve",
-    "build": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service build",
+    "serve-dev": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service serve --mode dev --port 8081",
+    "serve-prod": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service serve --mode prod",
+    "build-dev": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service build --mode dev",
+    "build-prod": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service build --mode prod",
     "lint": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service lint"
   },
   "dependencies": {
