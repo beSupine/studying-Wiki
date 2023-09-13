@@ -76,18 +76,18 @@ import {defineComponent, onMounted, ref, reactive, toRef} from 'vue';
 import {StarOutlined, LikeOutlined, MessageOutlined} from '@ant-design/icons-vue';
 import axios from 'axios';
 // @ is an alias to /src
-const listData: Record<string, string>[] = [];
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'https://www.antdv.com/',
-    title: `ant design vue part ${i}`,
-    avatar: 'https://joeschmoe.io/api/v1/random',
-    description:
-        'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-        'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  });
-}
+// const listData: Record<string, string>[] = [];
+// for (let i = 0; i < 23; i++) {
+//   listData.push({
+//     href: 'https://www.antdv.com/',
+//     title: `ant design vue part ${i}`,
+//     avatar: 'https://joeschmoe.io/api/v1/random',
+//     description:
+//         'Ant Design, a design language for background applications, is refined by Ant UED Team.',
+//     content:
+//         'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+//   });
+// }
 
 const actions: Record<string, any>[] = [
   {icon: StarOutlined, text: '156'},
@@ -101,16 +101,21 @@ export default defineComponent({
     const ebooks = ref();
     const ebooks1 = reactive({books: []});
     onMounted(() => {
-      axios.get("/ebook/list").then((response) => {
+      axios.get("/ebook/list",{
+        params:{
+          page:1,
+          size:1000
+        }
+      }).then((response) => {
         const data = response.data;
-        ebooks.value = data.content;
-        ebooks1.books = data.content;
+        ebooks.value = data.content.list;
+       // ebooks1.books = data.content;
       });
     });
     return {
       ebooks,
-      ebooks2: toRef(ebooks1, "books"),
-      listData,
+      //ebooks2: toRef(ebooks1, "books"),
+      //listData,
       actions,
 
     }
