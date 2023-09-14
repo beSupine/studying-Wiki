@@ -12,16 +12,16 @@
           @change="handleTableChange"
       >
         <template #cover="{ text: cover }">
-          <img v-if="cover" :src="cover" alt="avatar" />
+          <img v-if="cover" :src="cover" alt="avatar"/>
         </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
-              <a-button type="primary" @click="edit(record)">
-                编辑
-              </a-button>
-              <a-button type="danger">
-                删除
-              </a-button>
+            <a-button type="primary" @click="edit(record)">
+              编辑
+            </a-button>
+            <a-button type="danger">
+              删除
+            </a-button>
           </a-space>
         </template>
       </a-table>
@@ -35,26 +35,26 @@
   >
     <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="封面">
-        <a-input v-model:value="ebook.cover" />
+        <a-input v-model:value="ebook.cover"/>
       </a-form-item>
       <a-form-item label="名称">
-        <a-input v-model:value="ebook.name" />
+        <a-input v-model:value="ebook.name"/>
       </a-form-item>
       <a-form-item label="分类一">
-        <a-input v-model:value="ebook.category1Id" />
+        <a-input v-model:value="ebook.category1Id"/>
       </a-form-item>
       <a-form-item label="分类二">
-        <a-input v-model:value="ebook.category2Id" />
+        <a-input v-model:value="ebook.category2Id"/>
       </a-form-item>
       <a-form-item label="描述">
-        <a-input v-model:value="ebook.desc" type="textarea" />
+        <a-input v-model:value="ebook.desc" type="textarea"/>
       </a-form-item>
     </a-form>
   </a-modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import {defineComponent, onMounted, ref} from 'vue';
 import axios from 'axios';
 
 export default defineComponent({
@@ -72,7 +72,7 @@ export default defineComponent({
       {
         title: '封面',
         dataIndex: 'cover',
-        slots: { customRender: 'cover' }
+        slots: {customRender: 'cover'}
       },
       {
         title: '名称',
@@ -103,7 +103,7 @@ export default defineComponent({
       {
         title: 'Action',
         key: 'action',
-        slots: { customRender: 'action' }
+        slots: {customRender: 'action'}
       }
     ];
 
@@ -113,18 +113,18 @@ export default defineComponent({
     const handleQuery = (params: any) => {
       loading.value = true;
       axios.get("/ebook/list", {
-        params:{
-          page:params.page,
-          size:params.size
+        params: {
+          page: params.page,
+          size: params.size
         }
       }).then((response) => {
         loading.value = false;
         const data = response.data;
-          ebooks.value = data.content.list;
+        ebooks.value = data.content.list;
 
-          // 重置分页按钮
-          pagination.value.current = params.page;
-          pagination.value.total = data.content.total;
+        // 重置分页按钮
+        pagination.value.current = params.page;
+        pagination.value.total = data.content.total;
       });
     };
 
@@ -145,10 +145,20 @@ export default defineComponent({
     const modalLoading = ref(false);
     const handleModalOk = () => {
       modalLoading.value = true;
-      setTimeout(() => {
-        modalVisible.value = false;
-        modalLoading.value = false;
-      }, 2000);
+
+      axios.post("/ebook/save", ebook.value).then((response) => {
+        const data = response.data//data = commonResp
+        if (data.success) {
+          modalVisible.value = false;
+          modalLoading.value = false;
+
+          //重新加载列表
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize,
+          });
+        }
+      });
     };
 
     /**
@@ -161,8 +171,8 @@ export default defineComponent({
 
     onMounted(() => {
       handleQuery({
-        page:1,
-        size:pagination.value.pageSize
+        page: 1,
+        size: pagination.value.pageSize
       });
     });
 
