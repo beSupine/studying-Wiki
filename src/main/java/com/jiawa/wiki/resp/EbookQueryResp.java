@@ -1,6 +1,6 @@
 package com.jiawa.wiki.resp;
 
-public class EbookQueryResp {
+public class  EbookQueryResp {
     private Long id;
 
     private String name;
