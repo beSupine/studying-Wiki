@@ -9,6 +9,7 @@ import com.jiawa.wiki.service.EbookService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 @RestController//返回字符串
 @RequestMapping("/ebook")
@@ -21,7 +22,7 @@ public class EbookController {
      * GET,POST,PUT,DELETE分别对应查询，新增，修改，删除
      */
     @GetMapping("/list")
-    public CommonResp list(EbookQueryReq req) {
+    public CommonResp list(@Valid EbookQueryReq req) {
         CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
         PageResp<EbookQueryResp> list = ebookService.list(req);
         resp.setContent(list);
