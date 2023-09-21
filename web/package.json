@@ -3,18 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve-dev": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service serve --mode dev --port 8080",
-    "serve-prod": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service serve --mode prod",
-    "build-dev": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service build --mode dev",
-    "build-prod": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service build --mode prod",
-    "lint": "set NODE_OPTIONS=--openssl-legacy-provider&vue-cli-service lint"
+    "serve-dev": "vue-cli-service serve --mode dev --port 8080",
+    "serve-prod": "vue-cli-service serve --mode prod",
+    "build-dev": "vue-cli-service build --mode dev",
+    "build-prod": "vue-cli-service build --mode prod",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "ant-design-vue": "^4.0.0-rc.6",
     "axios": "^0.21.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "wangeditor": "^4.6.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.18.0",
