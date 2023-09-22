@@ -193,19 +193,22 @@ export default defineComponent({
     //因为树选择组建的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
     const treeSelectData = ref();
     treeSelectData.value = [];
-    const doc = ref({});
+    const doc = ref();
+    doc.value = {};
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content');
     editor.config.zIndex = 0;
     const handleSave = () => {
       modalLoading.value = true;
-
+      doc.value.content = editor.txt.html();
+      editor.txt.html();
       axios.post("/doc/save", doc.value).then((response) => {
         modalLoading.value = false;
         const data = response.data//data = commonResp
         if (data.success) {
           modalVisible.value = false;
+          message.success("保存成功！");
           //重新加载列表
           handleQuery();
         } else {
