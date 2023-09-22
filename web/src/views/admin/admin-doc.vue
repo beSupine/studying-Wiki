@@ -196,10 +196,13 @@ export default defineComponent({
     treeSelectData.value = [];
     const doc = ref();
     doc.value = {};
-    const modalVisible = ref(false);
+   // const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content');
     editor.config.zIndex = 0;
+    /**
+     * 保存
+     */
     const handleSave = () => {
       modalLoading.value = true;
       doc.value.content = editor.txt.html();
@@ -208,7 +211,7 @@ export default defineComponent({
         modalLoading.value = false;
         const data = response.data//data = commonResp
         if (data.success) {
-          modalVisible.value = false;
+         // modalVisible.value = false;
           message.success("保存成功！");
           //重新加载列表
           handleQuery();
@@ -302,7 +305,9 @@ export default defineComponent({
      * 编辑
      */
     const edit = (record: any) => {
-      modalVisible.value = true;
+     // modalVisible.value = true;
+      //清空富文本框
+      editor.txt.html("");
       doc.value = Tool.copy(record)
       handleQueryContent();
       // 不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
@@ -316,7 +321,9 @@ export default defineComponent({
      * 新增
      */
     const add = () => {
-      modalVisible.value = true;
+     // modalVisible.value = true;
+      //清空富文本框
+      editor.txt.html("");
       doc.value = {
         ebookId: route.query.ebookId
       };
@@ -371,7 +378,7 @@ export default defineComponent({
       add,
 
       doc,
-      modalVisible,
+     // modalVisible,
       modalLoading,
       handleSave,
 
