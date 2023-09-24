@@ -23,10 +23,11 @@ public class DocController {
     /**
      * GET,POST,PUT,DELETE分别对应查询，新增，修改，删除
      */
-    @GetMapping("/all")
-    public CommonResp all() {
+    @GetMapping("/all/{ebookId}")
+    public CommonResp all(@PathVariable Long ebookId) {
+
         CommonResp<List<DocQueryResp>> resp = new CommonResp<>();
-        List<DocQueryResp> list = docService.all();
+        List<DocQueryResp> list = docService.all(ebookId);
         resp.setContent(list);
         return resp;
     }

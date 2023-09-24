@@ -94,36 +94,36 @@
 
     </a-layout-content>
   </a-layout>
-<!--  <a-modal
-      title="文档表单"
-      v-model:visible="modalVisible"
-      :confirm-loading="modalLoading"
-      @ok="handleModalOk"
-  >
-    <a-form :model="doc" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-      <a-form-item label="名称">
-        <a-input v-model:value="doc.name"/>
-      </a-form-item>
-      <a-form-item label="父文档">
-        <a-tree-select
-            v-model:value="doc.parent"
-            style="width: 100%"
-            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-            :tree-data="treeSelectData"
-            placeholder="请选择父文档"
-            tree-default-expand-all
-            :replaceFields="{label: 'name', key: 'id', value: 'id'}"
-        >
-        </a-tree-select>
-      </a-form-item>
-      <a-form-item label="顺序">
-        <a-input v-model:value="doc.sort"/>
-      </a-form-item>
-      <a-form-item label="内容">
-        <div id="content"></div>
-      </a-form-item>
-    </a-form>
-  </a-modal>-->
+  <!--  <a-modal
+        title="文档表单"
+        v-model:visible="modalVisible"
+        :confirm-loading="modalLoading"
+        @ok="handleModalOk"
+    >
+      <a-form :model="doc" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+        <a-form-item label="名称">
+          <a-input v-model:value="doc.name"/>
+        </a-form-item>
+        <a-form-item label="父文档">
+          <a-tree-select
+              v-model:value="doc.parent"
+              style="width: 100%"
+              :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+              :tree-data="treeSelectData"
+              placeholder="请选择父文档"
+              tree-default-expand-all
+              :replaceFields="{label: 'name', key: 'id', value: 'id'}"
+          >
+          </a-tree-select>
+        </a-form-item>
+        <a-form-item label="顺序">
+          <a-input v-model:value="doc.sort"/>
+        </a-form-item>
+        <a-form-item label="内容">
+          <div id="content"></div>
+        </a-form-item>
+      </a-form>
+    </a-modal>-->
 </template>
 
 <script lang="ts">
@@ -150,6 +150,9 @@ export default defineComponent({
     param.value = {};
     const docs = ref();
     const loading = ref(false);
+    //因为树选择组建的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
+    const treeSelectData = ref();
+    treeSelectData.value = [];
 
     const columns = [
       {
@@ -172,7 +175,7 @@ export default defineComponent({
     const handleQuery = () => {
       loading.value = true;
       level1.value = [];
-      axios.get("/doc/all").then((response) => {
+      axios.get("/doc/all/" + route.query.ebookId).then((response) => {
         loading.value = false;
         const data = response.data;
         if (data.success) {
@@ -181,6 +184,10 @@ export default defineComponent({
           level1.value = [];
           level1.value = Tool.array2Tree(docs.value, 0);
           console.log("树形结构：", level1);
+
+          treeSelectData.value = Tool.copy(level1.value);
+          // 为选择树前面添加一个"无"
+          treeSelectData.value.unshift({id: 0, name: '无'});
 
         } else {
           message.error(data.message);
@@ -191,12 +198,10 @@ export default defineComponent({
 
 
     // -------- 表单 ---------
-    //因为树选择组建的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
-    const treeSelectData = ref();
-    treeSelectData.value = [];
+
     const doc = ref();
     doc.value = {};
-   // const modalVisible = ref(false);
+    // const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content');
     editor.config.zIndex = 0;
@@ -211,7 +216,7 @@ export default defineComponent({
         modalLoading.value = false;
         const data = response.data//data = commonResp
         if (data.success) {
-         // modalVisible.value = false;
+          // modalVisible.value = false;
           message.success("保存成功！");
           //重新加载列表
           handleQuery();
@@ -305,7 +310,7 @@ export default defineComponent({
      * 编辑
      */
     const edit = (record: any) => {
-     // modalVisible.value = true;
+      // modalVisible.value = true;
       //清空富文本框
       editor.txt.html("");
       doc.value = Tool.copy(record)
@@ -321,7 +326,7 @@ export default defineComponent({
      * 新增
      */
     const add = () => {
-     // modalVisible.value = true;
+      // modalVisible.value = true;
       //清空富文本框
       editor.txt.html("");
       doc.value = {
@@ -378,7 +383,7 @@ export default defineComponent({
       add,
 
       doc,
-     // modalVisible,
+      // modalVisible,
       modalLoading,
       handleSave,
 
