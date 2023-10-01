@@ -98,12 +98,14 @@ public class DocService {
 
         }
     }
+
     /**
      * 删除
      */
     public void delete(Long id) {
         docMapper.deleteByPrimaryKey(id);
     }
+
     public void delete(List<String> ids) {
         DocExample docExample = new DocExample();
         DocExample.Criteria criteria = docExample.createCriteria();
@@ -120,5 +122,12 @@ public class DocService {
         } else {
             return content.getContent();
         }
+    }
+
+    /**
+     * 点赞
+     */
+    public void vote(Long id) {
+        docMapperCust.increaseVoteCount(id);
     }
 }

@@ -11,23 +11,29 @@
               v-if="level1.length > 0"
               :tree-data="level1"
               @select="onSelect"
-              :replaceFields="{title: 'name', key: 'id', value: 'id'}"
+              :fieldNames="{title: 'name', key: 'id', value: 'id'}"
               :defaultExpandAll="true"
-              :defaultSelectedKeys="defaultSelectedKeys"
-
           >
           </a-tree>
         </a-col>
         <a-col :span="18">
           <div>
-            <h2>{{doc.name}}</h2>
+            <h2>{{ doc.name }}</h2>
             <div>
-              <span>阅读数：{{doc.viewCount}}</span> &nbsp; &nbsp;
-              <span>点赞数：{{doc.voteCount}}</span>
+              <span>阅读数：{{ doc.viewCount }}</span> &nbsp; &nbsp;
+              <span>点赞数：{{ doc.voteCount }}</span>
             </div>
             <a-divider style="height: 2px; background-color: #9999cc"/>
           </div>
-          <div class="wangeditor" :innerHTML="html"></div>
+          <div class="wangeditor" :innerHTML="html" :key="editorKey">
+          </div>
+          <div class="vote-div">
+            <a-button type="primary" shape="round" :size="'large'" @click="vote">
+              <template #icon>
+                <LikeOutlined/> &nbsp;点赞：{{ doc.voteCount }}
+              </template>
+            </a-button>
+          </div>
         </a-col>
       </a-row>
     </a-layout-content>
@@ -48,9 +54,7 @@ export default defineComponent({
     const route = useRoute()
     const docs = ref();
     const html = ref();
-    //测出来这个参数无效，不会选中
-    const defaultSelectedKeys = ref();
-    defaultSelectedKeys.value = [];
+    let editorKey = 0;
     // 当前选中的文档
     const doc = ref();
     doc.value = {};
@@ -64,7 +68,10 @@ export default defineComponent({
       axios.get("/doc/find-content/" + id).then((response) => {
         const data = response.data;
         if (data.success) {
+          editorKey += 1;
+          console.log(100, editorKey);
           html.value = data.content;
+          console.log(123, html.value);
         } else {
           message.error(data.message);
         }
@@ -83,7 +90,6 @@ export default defineComponent({
           level1.value = Tool.array2Tree(docs.value, 0);
 
           if (Tool.isNotEmpty(level1)) {
-            defaultSelectedKeys.value = [level1.value[0].id];
             handleQueryContent(level1.value[0].id);
             // 初始显示文档信息
             doc.value = level1.value[0];
@@ -100,24 +106,36 @@ export default defineComponent({
       console.log('selected', selectedKeys, info);
       if (Tool.isNotEmpty(selectedKeys)) {
         // 选中某一节点时，加载该节点的文档信息
-        doc.value = info.selectedNodes[0].props;
+        doc.value = info.selectedNodes[0];
         //加载内容
         handleQueryContent(selectedKeys[0]);
-
       }
     }
+    // 点赞
+    const vote = () => {
+      axios.get('/doc/vote/' + doc.value.id).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          doc.value.voteCount++;
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
 
 
     onMounted(() => {
       handleQuery();
+
     });
 
     return {
       level1,
       html,
       onSelect,
-      defaultSelectedKeys,
       doc,
+      vote,
+
 
     }
   }
@@ -182,6 +200,13 @@ export default defineComponent({
   margin: 20px 10px !important;
   font-size: 16px !important;
   font-weight: 600;
+}
+
+
+/* 点赞 */
+.vote-div {
+  padding: 15px;
+  text-align: center;
 }
 </style>
 
