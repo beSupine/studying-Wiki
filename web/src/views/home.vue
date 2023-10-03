@@ -33,10 +33,18 @@
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
-          <span v-for="{ icon, text } in actions" :key="icon">
-            <component :is="icon" style="margin-right: 8px"/>
-            {{ text }}
-          </span>
+              <span>
+                <component v-bind:is="'FileOutlined'" style="margin-right: 8px"/>
+                {{ item.docCount }}
+              </span>
+              <span>
+                <component v-bind:is="'UserOutlined'" style="margin-right: 8px"/>
+                {{ item.viewCount }}
+              </span>
+              <span>
+                <component v-bind:is="'LikeOutlined'" style="margin-right: 8px"/>
+                {{ item.voteCount }}
+              </span>
             </template>
             <a-list-item-meta :description="item.description">
               <template #title>
@@ -75,11 +83,6 @@ import {Tool} from "@/util/tool";
 //   });
 // }
 
-const actions: Record<string, any>[] = [
-  {icon: StarOutlined, text: '156'},
-  {icon: LikeOutlined, text: '156'},
-  {icon: MessageOutlined, text: '2'},
-];
 
 export default defineComponent({
   name: 'Home',
@@ -107,7 +110,7 @@ export default defineComponent({
     };
     const isShowWelcome = ref(true);
     let categoryId2 = 0;
-    const handleQueryEbook = () =>{
+    const handleQueryEbook = () => {
       axios.get("/ebook/list", {
         params: {
           page: 1,
@@ -142,7 +145,6 @@ export default defineComponent({
       ebooks,
       //ebooks2: toRef(ebooks1, "books"),
       //listData,
-      actions,
 
       handleClick,
       level1,
