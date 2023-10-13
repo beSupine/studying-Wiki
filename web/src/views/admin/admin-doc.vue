@@ -33,7 +33,7 @@
                       <img v-if="cover" :src="cover" alt="avatar"/>
                     </template>-->
             <template #name="{ text, record }">
-              {{record.sort}} {{text}}
+              {{ record.sort }} {{ text }}
             </template>
             <template v-slot:action="{ text, record }">
               <a-space size="small">
@@ -86,7 +86,8 @@
             </a-form-item>
             <a-form-item>
               <a-button type="primary" @click="handlePreviewContent()">
-                <EyeOutlined /> 内容预览
+                <EyeOutlined/>
+                内容预览
               </a-button>
             </a-form-item>
             <a-form-item>
@@ -192,8 +193,8 @@ export default defineComponent({
           level1.value = [];
           level1.value = Tool.array2Tree(docs.value, 0);
           console.log("树形结构：", level1);
-
-          treeSelectData.value = Tool.copy(level1.value);
+          //父文档下拉框初始化，相当于点击新增
+          treeSelectData.value = Tool.copy(level1.value) || [];
           // 为选择树前面添加一个"无"
           treeSelectData.value.unshift({id: 0, name: '无'});
 
@@ -202,7 +203,6 @@ export default defineComponent({
         }
       });
     };
-
 
 
     // -------- 表单 ---------
@@ -268,7 +268,7 @@ export default defineComponent({
     /**
      * 查找整根树枝
      */
-    const deleteIds:Array<string> = [];
+    const deleteIds: Array<string> = [];
     const deleteNames: Array<string> = [];
     const getDeleteIds = (treeSelectData: any, id: any) => {
       // console.log(treeSelectData, id);
@@ -282,7 +282,7 @@ export default defineComponent({
           //node.disabled = true;
           //将目标ID放入结果集deleteIds
           deleteIds.push(id);
-          console.log(222,deleteIds);
+          console.log(222, deleteIds);
           deleteNames.push(node.name);
 
           // 遍历所有子节点
@@ -342,7 +342,7 @@ export default defineComponent({
       doc.value = {
         ebookId: route.query.ebookId
       };
-      treeSelectData.value = Tool.copy(level1.value);
+      treeSelectData.value = Tool.copy(level1.value)|| [];
 
       // 为选择树前面添加一个"无"
       treeSelectData.value.unshift({id: 0, name: '无'});
@@ -351,7 +351,7 @@ export default defineComponent({
      * 删除
      */
     const handleDelete = (id: number) => {
-      console.log(1111,level1, level1.value, id)
+      console.log(1111, level1, level1.value, id)
       //清空数组，否则多次删除时，数组会一直增加,可能存在缓存问题
       deleteIds.length = 0;
       deleteNames.length = 0;
